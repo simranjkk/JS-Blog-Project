@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blogs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        h1{
+            text-align: center;
+        }
+        #cross-btn{
+            float: right;
+        }
+        .edit_view{
+            width: 50%;
+            float: left;
+            margin-left: 50px;
+            margin-bottom: 50px;
+        }
+        #message{
+          background-color: green;
+          color: white;
+          padding: 10px;
+          display: none;
+        }
+    </style>
+</head>
+<body>
+  <h3 id="message"></h3>
+    <h1>All Blogs</h1>
+   <div class =" col-md-8 offset-md-1"> <a href="/Blogs.html" class="btn btn-outline-info">Show All Blogs</a>
+    <a href="/add.html" class="btn btn-outline-info">Write New Blog</a>
+  </div>
+  
+     
+    <div class="container">
+        
+        <table class="table" id='tasks'>
+            <thead>
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Pre Description</th>
+                  <th scope="col">Publish Date</th>
+                  <th scope="col">Keyword</th>
+                  <th scope="col">Author</th>
+                  <th scope="col">View Blog</th>
+                  <th scope="col">Edit Blog</th>
+                  <th scope="col">Delete Blog</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+    </div>
+
+    <!-- view Blog -->
+   <div class="container">
+        <div class="card" id="card" style="width: 18rem;">
+            <button type="button" id="cross-btn" onclick="closeView()" class="btn btn-outline-danger">X</button>
+            <div class="card-body">
+            <h5 class="card-title" >Title:<span id="view_title"> </span></h5>
+            <p class="card-text" >Pre 
+              Description:<span id="view_predescription" ></span> </p>
+            <h6 class="card-text"  > Publish Date:
+                <span id="view_PublishDate"></span>
+            </h6>
+            <h6 class="card-text" > Keyword :
+                <span  id="Keyword"></span>
+            </h6>
+            <h6 class="card-text" >Author:
+                <span id="aname" ></span>
+            </h6> 
+            
+
+            </div>
+        </div>
+   </div>
+
+     <!-- edit task -->
+     <div id="edit_view" class="container edit_view" >
+        <h3>Edit Task</h3>
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">ID:</label>
+            <input type="text" class="form-control"  id="id" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" placeholder="Enter Title">
+          </div>
+          <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">Enter Description</label>
+            <textarea class="form-control" id="description" rows="3"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Publish Date</label>
+            <input type="date" class="form-control" id="currentDate">
+          </div>
+          <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Author</label>
+            <input type="text" class="form-control" id="aname" >
+          </div>
+          <select class="form-select" id="Keyword" aria-label="Default select example">
+            <option selected>Keyword</option>
+            <option value="tech">Tech</option>
+            <option value="food">Food</option>
+            <option value="travel">Travel</option>
+            <option value="health">Health</option>
+            <option value="nature">Nature</option>
+          </select>
+          <br/>
+          
+          <br/>
+          <input type="button" class="btn btn-outline-primary" onclick="editTask()" value="Edit" >
+    </div>
+   
+    
+
+    <script>
+       
+        let tasks= JSON.parse(localStorage.getItem('tasks')) 
+    
+        document.getElementById("card").style.display="none"
+        document.getElementById('edit_view').style.display="none"
+      
+        tasks.map((task,id)=>{
+      
+            let table = document.getElementById("tasks");
+            let row = table.insertRow(1);
+            let cell1 = row.insertCell(0);
+            let cell2 = row.insertCell(1);
+            let cell3 = row.insertCell(2);
+            let cell4 = row.insertCell(3);
+            let cell5 = row.insertCell(4);
+            let cell6 = row.insertCell(5);
+            let cell7 = row.insertCell(6);
+            let cell8 = row.insertCell(7);
+            let cell9 = row.insertCell(8)
+
+            cell1.innerHTML = id
+            cell2.innerHTML =task.title;
+            cell3.innerHTML =task.description;
+            cell4.innerHTML =task.currentDate;
+            cell5.innerHTML =task.Keyword;
+            cell6.innerHTML =task.aname;
+            
+            let view= document.createElement("button");
+            view.innerHTML = "View";
+            view.id=id;
+            view.className="btn btn-outline-info"
+            view.addEventListener("click",()=>viewFun(id), false); //button with  click event
+            cell7.appendChild(view); 
+            let edit= document.createElement("button");
+            edit.innerHTML = "Edit";
+            edit.className="btn btn-outline-success"
+            edit.id=id
+            edit.addEventListener("click",()=>editFun(id), false);//button with  click event
+            cell8.appendChild(edit);
+            let del= document.createElement("button");
+            del.id=id
+            del.className="btn btn-outline-danger"
+            del.innerHTML = "Delete";
+            del.addEventListener("click",()=>deleteFun(id), false);//button with  click event
+            cell9.appendChild(del);
+
+        })
+
+   
+       function viewFun(id){
+         
+         document.getElementById("card").style.display="block"
+         //fetching tasks from localstorege inside viewFun  
+         //keep in mind that we fetched inside function so its scope is also till function only
+           let tasks=JSON.parse(localStorage.getItem('tasks'))
+           //here adding the tasks values in html tag using id to display on browser
+           document.getElementById("view_title").innerHTML=tasks[id].title
+           document.getElementById("view_predescription").innerHTML=tasks[id].description
+           document.getElementById("view_PublishDate").innerHTML=tasks[id].currentDate
+           document.getElementById("Keyword").innerHTML=tasks[id].Keyword
+           document.getElementById("aname").innerHTML=tasks[id].aname
+            
+       }
+        //when edit button is clicked it will revoke
+       function editFun(id){
+         //on click editFun function will be called with parameter id .ie index of an array in which the that particular task is added ex:tasks[1] stores task2
+         //changing display from hidden to block 
+           document.getElementById('edit_view').style.display="block"
+          //  fetching tasks from localstorege inside viewFun  
+         //keep in mind that we fetched inside function so its scope is also till function only
+           let tasks=JSON.parse(localStorage.getItem('tasks'))
+           //here we are adding tasks values in form inputes
+           //when we use innerHtml means adding on html tags like in h1,span,table....etc
+           //when we user value means assigning the values inside form tags
+           //id to identify index of the array
+           document.getElementById("id").value=id
+           document.getElementById("title").value=tasks[id].title
+           document.getElementById("description").value=tasks[id].description
+           document.getElementById("currentDate").value=tasks[id].currentDate
+           document.getElementById("aname").value=tasks[id].aname
+           document.getElementById("Keyword").value=tasks[id].Keyword
+
+           console.log(tasks[id].aname+"Simran");
+           
+       }
+        //when delete button is clicked it will revoke
+       function deleteFun(id){
+         //on click deleteFun function will be called with parameter id .ie index of an array in which the that particular task is added ex:tasks[1] stores task2
+        let tasks=JSON.parse(localStorage.getItem('tasks'))
+        //splice is used to delete the element in array
+        //syntax
+        //splice(index_no,no_of_element_to_delete)
+        //ex:tasks.splice(0,1) means delete index 0 element i.e only one element
+        tasks.splice(id,1);
+        //after delete that particluar task again add the new tasks without that deleted task in local storge
+        localStorage.setItem('tasks',JSON.stringify(tasks))
+        //show meassge to user
+        //change display block
+         document.getElementById('message').innerHTML="Task Deleted Successfully";
+         document.getElementById('message').style.display="block";
+         //after 2 seconds reload the page to show affect of deleted task
+         setTimeout(()=>{
+          location.reload();
+         },2000)
+            
+       }
+       function closeView(){
+         //here hidding the card i.e dispaly "node"
+        document.getElementById("card").style.display="none"
+       }
+       
+       //when edit task button is clicked this function will invoke
+       function editTask(){
+         //fetch tasks from local storage
+         let tasks=JSON.parse(localStorage.getItem('tasks'))
+          //add values in from input tag from tasks using .value (we use innerHTML to add values in html tags)
+         let id= document.getElementById("id").value
+         let title= document.getElementById("title").value 
+         let description= document.getElementById("description").value
+         let currentDate= document.getElementById("currentDate").value
+         let aname= document.getElementById("aname").value
+         let Keyword= document.getElementById("Keyword").value
+
+         console.log(aname+"Av");
+         
+         //create object using the data
+         let task={
+            title:title,
+            description:description,
+            currentDate:currentDate,
+            aname:aname,
+            Keyword:Keyword
+           
+         }
+         //replace with current task using index
+         tasks[id]=task;
+         //again store the edited task in local storage
+         localStorage.setItem('tasks',JSON.stringify(tasks))
+         //show message
+         document.getElementById('message').innerHTML="Blog  Edited Sucessfull !!";
+         //chnage dispaly to block so, it will be visible
+         document.getElementById('message').style.display="block";
+         //after 2 sec reload the page so it will reflect the edited changes 
+         setTimeout(()=>{
+          location.reload();
+         },2000)
+         
+       }
+
+    </script>
+
+    <!-- cdn link for bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>  
+</body>
+</html>
